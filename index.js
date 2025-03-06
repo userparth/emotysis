@@ -22,23 +22,7 @@ async function analyzeImage(imagePath) {
 		// Create OpenAI request object
 		const requestPayload = {
 			model: "gpt-4-turbo",
-			messages: [
-				{
-					role: "system",
-					content:
-						"You are an AI that detects if an uploaded image is a passport's front-side photo.",
-				},
-				{
-					role: "user",
-					content: [
-						{ type: "text", text: "Is this a passport front-side image?" },
-						{
-							type: "image_url",
-							image_url: `data:image/jpeg;base64,${base64Image}`,
-						},
-					],
-				},
-			],
+			messages: [],
 		};
 
 		// Encrypt request internally
