@@ -1,117 +1,55 @@
-# Sitemap Generator Library
+# Emotions Analyzer
 
-## 📌 Overview
+Emotions Analyzer is an NPM library that allows users to upload an image and analyze for emotions whether it is front-side image using mult-model.
 
-`sitemap-generator-lib` is a simple and efficient Node.js library for generating XML sitemaps. It supports JSON and CSV as data sources and allows flexible configuration.
+## Installation
 
----
-
-## 📦 Installation
-
-Install the package via npm:
+To install the package, run:
 
 ```sh
-npm install sitemap-generator-lib
+npm install emotysis
 ```
 
----
+## Usage
 
-## 🚀 Usage
+### Import and Use the Library
 
-### 📥 Importing the Library
+```javascript
+const { analyzeImage } = require("emotysis");
+require("dotenv").config();
 
-```js
-const SitemapGenerator = require("sitemap-generator-lib");
-```
-
-### 🛠 Basic Example
-
-```js
-const SitemapGenerator = require("sitemap-generator-lib");
-
-const config = {
-	baseUrl: "https://example.com",
-	storage: "json", // Supports "json" or "csv"
-	sitemapPath: "./sitemaps",
-	dataFile: "./data.json", // or "./data.csv"
-};
-
-const generator = new SitemapGenerator(config);
-generator.generateSitemap();
-```
-
----
-
-## ⚙️ Configuration Options
-
-| Option        | Type   | Description                                      |
-| ------------- | ------ | ------------------------------------------------ |
-| `baseUrl`     | String | The base URL for the sitemap links               |
-| `storage`     | String | Storage type (`json` or `csv`)                   |
-| `sitemapPath` | String | Directory where the sitemap will be saved        |
-| `dataFile`    | String | Path to the JSON or CSV file containing URL data |
-
----
-
-## 📂 Data File Format
-
-### 📜 JSON Format (`data.json`)
-
-```json
-[
-	{
-		"url": "/page-1",
-		"lastmod": "2024-02-29",
-		"changefreq": "daily",
-		"priority": "0.8"
-	},
-	{
-		"url": "/page-2",
-		"lastmod": "2024-02-28",
-		"changefreq": "weekly",
-		"priority": "0.6"
+(async () => {
+	try {
+		const result = await analyzeImage("path/to/someImage.jpg");
+		console.log("Analysis Result:", result);
+	} catch (error) {
+		console.error(error.message);
 	}
-]
+})();
 ```
 
-### 📄 CSV Format (`data.csv`)
+## Environment Variables
 
-```
-url,lastmod,changefreq,priority
-/page-1,2024-02-29,daily,0.8
-/page-2,2024-02-28,weekly,0.6
-```
+Create a `.env` file in your project root and add your OpenAI API key:
 
----
-
-## 📜 Output (Generated `sitemap.xml`)
-
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://example.com/page-1</loc>
-    <lastmod>2024-02-29</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://example.com/page-2</loc>
-    <lastmod>2024-02-28</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-</urlset>
+```sh
+OPENAI_API_KEY=your_openai_api_key_here
 ```
 
----
+## How It Works
 
-## 📜 License
+1. User calls `analyzeImage("path/to/image.jpg")`.
+2. Library reads & converts the image to Base64.
+3. Encrypts the request internally.
+4. Sends the encrypted request to OpenAI.
+5. Returns AI emotion analysis result indicating whether for the image.
 
-This project is licensed under the **MIT License**.
+## Features
 
----
+✅ Securely encrypts OpenAI requests internally.  
+✅ User only needs to pass the image; encryption is handled inside.  
+✅ Works seamlessly with OpenAI GPT models.
 
-## 👨‍💻 Author
+## License
 
-Developed by [Parth Sharma](https://getparth.com)
+This project is licensed under the MIT License.
