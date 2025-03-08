@@ -1,42 +1,43 @@
-require("dotenv").config();
-const OpenAI = require("openai");
-const fs = require("fs");
-const { encrypt } = require("./utils");
+// index.js - Main entry for the NPM package
+import express from "express";
+import multer from "multer";
+import { analyzeEmotion } from "./emotionAnalyzer.js";
 
-// OpenAI Setup
-const openai = new OpenAI({
-	apiKey: process.env.OPENAI_API_KEY,
+const app = express();
+const upload = multer({ storage: multer.memoryStorage() });
+
+app.post("/analyze", upload.single("image"), async (req, res) => {
+	if (!req.file) {
+		return res.status(400).json({ error: "No image uploaded" });
+	}
+
+	try {
+		const emotions = await analyzeEmotion(req.file.buffer);
+		res.json(emotions);
+	} catch (error) {
+		res.status(500).json({ error: "Failed to analyze emotion" });
+	}
 });
 
-/**
- * Analyze Image
- * @param {string} imagePath - Path to the image file
- * @returns {Promise<string>} - AI response (Is this a passport image?)
- */
-async function analyzeImage(imagePath) {
-	try {
-		// Read image and convert to Base64
-		const imageBuffer = fs.readFileSync(imagePath);
-		const base64Image = imageBuffer.toString("base64");
+app.listen(3000, () => console.log("Server running on port 3000"));
 
-		// Create OpenAI request object
-		const requestPayload = {
-			model: "gpt-4-turbo",
-			messages: [],
-		};
+// emotionAnalyzer.js - Handles AI-based emotion analysis
+import OpenAI from "openai";
+import { extractFacialFeatures } from "./faceExtractor.js";
 
-		// Encrypt request internally
-		const encryptedRequest = encrypt(JSON.stringify(requestPayload));
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
-		// Send request to OpenAI
-		const response = await openai.chat.completions.create(
-			JSON.parse(encryptedRequest)
-		);
+export async function analyzeEmotion(imageBuffer) {
+	const features = extractFacialFeatures(imageBuffer);
 
-		return response.choices[0].message.content;
-	} catch (error) {
-		throw new Error("Error analyzing image: " + error.message);
-	}
+	const prompt = `Based on these facial features: ${JSON.stringify(
+		features
+	)}, predict the emotions with percentage distribution.`;
+
+	const response = await openai.chat.completions.create({
+		model: "gpt-4-turbo",
+		messages: [{ role: "user", content: prompt }],
+	});
+
+	return response.choices[0].message.content;
 }
-
-module.exports = { analyzeImage };
