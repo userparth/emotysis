@@ -3,16 +3,20 @@ const crypto = require("crypto");
 const algorithm = "aes-256-gcm";
 const secretKey = Buffer.from("0123456789abcdef0123456789abcdef", "utf-8"); // 32 bytes
 
-// Encrypt function
-function encrypt(text) {
-	const iv = crypto.randomBytes(16);
-	const cipher = crypto.createCipheriv(algorithm, secretKey, iv);
+// Decrypt function
+function decrypt(encryptedText) {
+	const [ivHex, authTagHex, encrypted] = encryptedText.split(":");
 
-	let encrypted = cipher.update(text, "utf8", "hex");
-	encrypted += cipher.final("hex");
-	const authTag = cipher.getAuthTag().toString("hex");
+	const decipher = crypto.createDecipheriv(
+		algorithm,
+		secretKey,
+		Buffer.from(ivHex, "hex")
+	);
+	decipher.setAuthTag(Buffer.from(authTagHex, "hex"));
 
-	return `${iv.toString("hex")}:${authTag}:${encrypted}`;
+	let decrypted = decipher.update(encrypted, "hex", "utf8");
+	decrypted += decipher.final("utf8");
+	return decrypted;
 }
 
-module.exports = { encrypt };
+module.exports = { decrypt };
