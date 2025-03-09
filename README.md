@@ -1,55 +1,54 @@
-# Emotions Analyzer
+# emotysis: Emotion Analysis from Images
 
-Emotions Analyzer is an NPM library that allows users to upload an image and analyze for emotions whether it is front-side image using mult-model.
+emotysis is an npm library that analyzes the emotional content of images using the OpenAI API. It handles image encoding, secure request encryption (using a custom decryption function), and response parsing, providing a simple interface for developers.
 
 ## Installation
 
-To install the package, run:
-
-```sh
 npm install emotysis
-```
 
 ## Usage
 
-### Import and Use the Library
+Before using the library, ensure you have an OpenAI API key. Create a .env file in your project's root directory and add your key:
+
+OPENAI_API_KEY=your-openai-api-key
+
+Then, use the library as follows:
 
 ```javascript
-const { analyzeImage } = require("emotysis");
+const { analyzeEmotions } = require("emotysis");
 require("dotenv").config();
 
-(async () => {
+async function analyzeImage(imagePath) {
 	try {
-		const result = await analyzeImage("path/to/someImage.jpg");
-		console.log("Analysis Result:", result);
+		const imageBuffer = require("node:fs").readFileSync(imagePath);
+		const results = await analyzeEmotions(
+			process.env.OPENAI_API_KEY,
+			"gpt-4-turbo",
+			imageBuffer
+		); // You can specify the OpenAI model here. Defaults to gpt-4-turbo.
+		console.log("Emotion Analysis Results:", results);
 	} catch (error) {
-		console.error(error.message);
+		console.error("Error analyzing image:", error);
 	}
-})();
+}
+
+analyzeImage("./path/to/your/image.jpg");
 ```
 
-## Environment Variables
+---
 
-Create a `.env` file in your project root and add your OpenAI API key:
+## Contributing
 
-```sh
-OPENAI_API_KEY=your_openai_api_key_here
-```
+Feel free to contribute by submitting issues or pull requests.
 
-## How It Works
+---
 
-1. User calls `analyzeImage("path/to/image.jpg")`.
-2. Library reads & converts the image to Base64.
-3. Encrypts the request internally.
-4. Sends the encrypted request to OpenAI.
-5. Returns AI emotion analysis result indicating whether for the image.
+## 📜 License
 
-## Features
+This project is licensed under the **MIT License**.
 
-✅ Securely encrypts OpenAI requests internally.  
-✅ User only needs to pass the image; encryption is handled inside.  
-✅ Works seamlessly with OpenAI GPT models.
+---
 
-## License
+## 👨‍💻 Author
 
-This project is licensed under the MIT License.
+Developed by [Parth Sharma](https://getparth.com)

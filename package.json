@@ -3,17 +3,24 @@
 	"version": "0.0.1-alpha",
 	"description": "Emotysis is a web application that uses AI to analyze images and provide a description of the emotions present in the image.",
 	"main": "index.js",
+	"scripts": {
+		"start": "node example.js"
+	},
 	"dependencies": {
-		"openai": "^4.0.0",
-		"dotenv": "^16.0.0",
-		"crypto": "^1.0.1",
-		"fs": "0.0.1-security"
+		"@fastify/multipart": "^7.7.3",
+		"dotenv": "^16.4.7",
+		"fastify": "^4.21.0",
+		"fs": "^0.0.1-security",
+		"multer": "^1.4.5-lts.1",
+		"openai": "^4.86.2",
+		"path": "^0.12.7"
 	},
 	"keywords": [
-		"passport",
-		"image-analysis",
-		"openai",
-		"ai"
+		"emotion",
+		"face",
+		"ai",
+		"gpt",
+		"emotion-analysis"
 	],
 	"author": "Parth Sharma",
 	"license": "MIT"
