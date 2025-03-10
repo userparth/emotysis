@@ -9,8 +9,9 @@ npm install emotysis
 ## Usage
 
 Before using the library, ensure you have an OpenAI API key. Create a .env file in your project's root directory and add your key:
-
+```
 OPENAI_API_KEY=your-openai-api-key
+```
 
 Then, use the library as follows:
 
